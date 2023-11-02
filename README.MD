@@ -59,6 +59,16 @@ Max(Numeric[int]())
 | Join          | Join(Pipeline)                           | 加入自定义节点                                            |
 | FlatMap       | FlatMap(FunctionHandler)                 | 转化数据，将流入的数组数据转化为item数据                             |
 
+## Parallel
+Parallel不同于java全局开启的实现，这里的Parallel会作用于后续的节点，不会对前置链路造成影响。
+另外使用Parallel后后续节点都是线程安全的比如如下操作。
+```go
+filter -> parallel -> peek -> map -> sort -> peek -> collect
+// 对于sort节点实际上是有状态的
+// auto generate
+filter -> parallel -> peek -> map -> sequential -> sort -> parallel -> peek -> collect
+```
+
 ## Other
 由于Golang对于范型的支持不够，对于Map操作有些特殊处理。
 ```go
